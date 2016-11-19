@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "extends": [
+    "standard"
+  ],
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "plugins": [
+    "babel"
+  ],
+  "rules": {
+    "comma-dangle": 0,
+    "arrow-parens": 0,
+    "no-class-assign": 0,
+    "space-before-function-paren": [2, "never"],
+    "no-trailing-spaces": [2, {"skipBlankLines": true}],
+    "babel/generator-star-spacing": 0,
+    "generator-star-spacing": 0,
+    "babel/arrow-parens": 1
+  }
+}

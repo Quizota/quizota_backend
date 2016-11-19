@@ -1,0 +1,5 @@
+{ "cmd": "autoRegister", "data": { "displayName": "phuong"} }
+
+{ "cmd": "playNow", "data": {} }
+
+{ "cmd": "syncGameData", "data": {"test": "hello"} }
