@@ -55,6 +55,9 @@ class SocketManager {
                     case 'syncGameData':
                         await this.syncGameData(socketUser, data)
                         break;
+                    case 'saveUser':
+                        await this.saveUser(socketUser, data)
+                        break;
                     case 'findParticipant':
                         break;
                     default:
@@ -104,12 +107,19 @@ class SocketManager {
         let user = await UserController.autoSignup(displayName)
         socket.emit('im', { code: 1, msg: `auto register success: ${displayName}`})
 
-        let socketUser = await this.addNewUser(socket, user)
-        await this.joinLobby(socketUser)
+        await this.addNewUser(socket, user)
     }
 
     async login(socket, data) {
+        let userName = data.userName
+        let password = data.password
 
+        let user = await UserController.login(userName, password)
+        
+        if(!user) {
+            return socket.emit('data', errorCode.loginFailed)
+        }
+        await this.addNewUser(socket, user)
     }
 
     async addNewUser(socket, user) { 
@@ -123,7 +133,7 @@ class SocketManager {
         this.userBySocketIds[socket.id] = user
         this.userSockets[user.userName] = socketUser
 
-        return socketUser
+        await this.joinLobby(socketUser)
     }
 
     async joinLobby(socketUser) {
@@ -144,8 +154,6 @@ class SocketManager {
         resData.data = data
 
         socketUser.send(resData)
-
-        console.log(resData)
     }
 
     async playNow(socketUser) {
@@ -180,10 +188,27 @@ class SocketManager {
         let roomName = socketUser.currentRoom
         if(roomName in this.boardControllers) {
             let board = this.boardControllers[roomName]
-            let syncData = errorCode.syncGameData
-            syncData.data = data
-            board.sendBroadcastExceptMe(socketUser, syncData)
+            board.handleGameMsg(socketUser, data)
         }
+    }
+
+    async saveUser(socketUser, data) {
+        let newUsername = data.userName
+        let password = data.password
+        let oldUserName = socketUser.user.userName
+
+        let user = await UserController.saveUser(socketUser.user, newUsername, password)
+        if(!user) {
+            return await socketUser.send(errorCode.userNameExist)
+        }
+
+        socketUser.user = user
+        this.userBySocketIds[socketUser.socket.id] = user
+        this.userSockets[newUsername] = socketUser
+
+        delete this.userSockets[oldUserName]
+        
+        socketUser.send(errorCode.success)
     }
 }
 

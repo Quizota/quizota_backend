@@ -38,4 +38,9 @@ userSchema.methods.validatePassword = async function(password) {
     return hash.toString('hex') === this.password
 }
 
+userSchema.methods.setPassword = async function(password) {
+    let hash = await crypto.promise.pbkdf2(password, PEPPER, 4096, 512, 'sha256')
+    this.password = hash.toString('hex')
+}
+
 module.exports = mongoose.model('User', userSchema)

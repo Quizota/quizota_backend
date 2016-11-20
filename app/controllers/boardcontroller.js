@@ -67,6 +67,19 @@ class BoardController {
         }
     }
 
+    async handleGameMsg(socketUser, gameData) {
+        let gameCmd = gameData.cmd
+        let data = gameData.data
+
+        switch(gameCmd) {
+            default:
+                let syncData = errorCode.syncGameData
+                syncData.data = gameData
+                this.sendBroadcastExceptMe(socketUser, syncData)
+                break;
+        }
+    }
+
 }
 
 module.exports = BoardController
