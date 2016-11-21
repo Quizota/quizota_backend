@@ -2,4 +2,8 @@
 
 { "cmd": "playNow", "data": {} }
 
-{ "cmd": "syncGameData", "data": {"test": "hello"} }
+{ "cmd": "login", "data": { "userName": "phuong2", "password": "123456" } }
+
+{ "cmd": "saveUser", "data": { "userName": "phuong2", "password": "123456" } }
+
+{ "cmd": "syncGameData", "data": {"cmd": "chat", "data": "hello sync game data"} }
