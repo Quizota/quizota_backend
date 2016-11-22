@@ -50,6 +50,11 @@ class UserController {
         return user
     }
 
+    async updateElo(user, bonusElo) {
+        user.updateElo(bonusElo)
+        await user.promise.save()
+    }
+
 }
 
 module.exports = new UserController()

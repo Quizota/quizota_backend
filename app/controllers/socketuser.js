@@ -10,6 +10,11 @@ class SocketUser {
     }
 
     async joinLobby() {
+
+        if(!this.isInLobby()) {
+            this.socket.leave(this.currentRoom)
+        }
+
         console.log(`Join lobby: ${this.user.displayName}`)
         this.socket.join(LOBBY_NAME)
         this.currentRoom = LOBBY_NAME
@@ -40,11 +45,6 @@ class SocketUser {
         this.socket.leave(LOBBY_NAME)
         this.socket.join(boardName)
         this.currentRoom = boardName
-    }
-
-    async leaveBoard(boardName) {
-        this.socket.leave(boardName)
-        this.joinLobby()
     }
 }
 

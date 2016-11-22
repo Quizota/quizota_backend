@@ -43,4 +43,8 @@ userSchema.methods.setPassword = async function(password) {
     this.password = hash.toString('hex')
 }
 
+userSchema.methods.updateElo = async function(increaseElo) {
+    this.elo += increaseElo
+}
+
 module.exports = mongoose.model('User', userSchema)

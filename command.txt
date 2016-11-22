@@ -7,3 +7,11 @@
 { "cmd": "saveUser", "data": { "userName": "phuong2", "password": "123456" } }
 
 { "cmd": "syncGameData", "data": {"cmd": "chat", "data": "hello sync game data"} }
+
+
+
+*** Game rush number
+
+{ "cmd": "playNow", "data": {} }
+{ "cmd": "syncGameData", "data": {"cmd": "gameAction", "data": { "pickNumber": "1"} } }
+{ "cmd": "backLobby", "data": {} }

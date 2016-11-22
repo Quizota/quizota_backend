@@ -58,6 +58,9 @@ class SocketManager {
                     case 'saveUser':
                         await this.saveUser(socketUser, data)
                         break;
+                    case 'backLobby':
+                        await this.backLobby(socketUser)
+                        break;
                     case 'findParticipant':
                         break;
                     default:
@@ -82,16 +85,7 @@ class SocketManager {
                     delete this.userSockets[user.userName]
 
                     if(!socketUser.isInLobby()) {
-                        let lastRoom = socketUser.currentRoom
-                        if(lastRoom in this.boardControllers) {
-                            let board = this.boardControllers[lastRoom]
-                            board.leaveBoard(socketUser, false)
-
-                            if(board.isEmpty()) {
-                                console.log(`Remove board: ${lastRoom}`)
-                                delete this.boardControllers[lastRoom]
-                            }
-                        }
+                        this.leaveBoard(socketUser)
                     }
                 }
             }
@@ -140,7 +134,8 @@ class SocketManager {
         await socketUser.joinLobby()
         let boardList = []
 
-        for(let board in this.boardControllers) {
+        for(let boardName in this.boardControllers) {
+            let board = this.boardControllers[boardName]
             boardList.push(board.getInfo())
         }
 
@@ -172,6 +167,8 @@ class SocketManager {
         let board = new BoardController(boardName)
 
         this.boardControllers[boardName] = board
+
+        console.log(`Board create: ${boardName}`)
 
         await board.joinBoard(socketUser)
         await board.joinBoard(participant)
@@ -209,6 +206,26 @@ class SocketManager {
         delete this.userSockets[oldUserName]
         
         socketUser.send(errorCode.success)
+    }
+
+    async leaveBoard(socketUser) {
+        let lastRoom = socketUser.currentRoom
+        if(lastRoom in this.boardControllers) {
+            let board = this.boardControllers[lastRoom]
+            board.leaveBoard(socketUser)
+
+            if(board.isEmpty()) {
+                console.log(`Remove board: ${lastRoom}`)
+                delete this.boardControllers[lastRoom]
+            }
+        }
+    }
+
+    async backLobby(socketUser) {
+       if(!socketUser.isInLobby()) {
+           this.leaveBoard(socketUser)
+           this.joinLobby(socketUser)
+       } 
     }
 }
 

@@ -1,11 +1,16 @@
 
 let errorCode = require('../models/errorcode')
+let gameController = require('./gameController')
+let numberRush = require('../gamelogics/numberrush')
+let userController = require('./userController')
 
 class BoardController {
 
     constructor(boardName) {
         this.boardName = boardName
         this.players = []
+        this.gameLogic = null
+        this.isPlaying = false
     }
 
     async joinBoard(socketUser) {
@@ -17,16 +22,13 @@ class BoardController {
          this.sendBroadcastAllPlayers(data)
     }
 
-    async leaveBoard(socketUser, isBackLobby) {
+    async leaveBoard(socketUser) {
         for(let i = 0; i < this.players.length; i++) {
             let su = this.players[i]
             if(socketUser.user.userName === su.user.userName) {
                 this.players.splice(i, 1)
                 break;
             }
-        }
-        if(isBackLobby) {
-            socketUser.leaveBoard(this.boardName)
         }
         this.sendBroadcastExceptMe(socketUser, errorCode.playerLeaveBoard)
     }
@@ -41,8 +43,16 @@ class BoardController {
         socketUser.socket.to(this.boardName).emit('data', data)
     }
 
-    async startGame() {
-        this.sendBroadcastAllPlayers(errorCode.startGame)
+    async startGame() {        
+        let gameData = await gameController.getRandomGameData()
+        let returnData = errorCode.startGame
+
+        if(gameData.type === 'number_rush') {
+            this.gameLogic = new numberRush(this, gameData)
+        }
+        returnData.data = await this.gameLogic.startGame()
+        await this.sendBroadcastAllPlayers(returnData)
+        this.isPlaying = true
     }
 
     isEmpty() {
@@ -68,17 +78,54 @@ class BoardController {
     }
 
     async handleGameMsg(socketUser, gameData) {
+
+        if(!this.isPlaying) {
+            return await socketUser.send(errorCode.gameNotPlay)
+        }
+
         let gameCmd = gameData.cmd
         let data = gameData.data
 
         switch(gameCmd) {
+            case 'gameAction':
+                await this.gameLogic.processAction(socketUser, data)
+                break;
             default:
                 let syncData = errorCode.syncGameData
                 syncData.data = gameData
-                this.sendBroadcastExceptMe(socketUser, syncData)
+                await this.sendBroadcastExceptMe(socketUser, syncData)
                 break;
         }
     }
+
+    getPlayerByUserName(userName) {
+        for(let i = 0; i < this.players.length; i++) {
+            let player = this.players[i]
+            if(player.user.userName === userName) {
+                return player
+            }
+        }
+        return null
+    }
+
+    async endGame(winner, results) {
+        this.isPlaying = false
+
+        // calculate elo bonus from range elo between 2 players
+        let bonusElo = 20
+        let res = errorCode.endGame
+        res.data = { winName: winner, bonusElo: bonusElo, scores: results }
+
+        let player = this.getPlayerByUserName(winner)
+
+        if(player) {
+            await userController.updateElo(player.user, bonusElo)
+        }
+
+        await this.sendBroadcastAllPlayers(res)
+    }
+
+    
 
 }
 
