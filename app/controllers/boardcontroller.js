@@ -13,13 +13,21 @@ class BoardController {
         this.isPlaying = false
     }
 
-    async joinBoard(socketUser) {
-         await socketUser.joinBoard(this.boardName)
-         this.players.push(socketUser)
+    async joinBoard(socketUser) {        
+        let newJoin = errorCode.playerJoinBoard
+        newJoin.data = { user: socketUser.user }
+        await this.sendBroadcastAllPlayers(newJoin)
 
-         let data = errorCode.playerJoinBoard
-         data.data = { user: socketUser.user } 
-         this.sendBroadcastAllPlayers(data)
+        let currentPlayer = errorCode.playerJoinBoardSuccess
+        currentPlayer.data = {}
+
+        if(this.players.length > 0) {
+            currentPlayer.data.user = this.players[0].user
+        }
+        await socketUser.send(currentPlayer)
+
+        await socketUser.joinBoard(this.boardName)
+        this.players.push(socketUser)
     }
 
     async leaveBoard(socketUser) {
@@ -35,7 +43,7 @@ class BoardController {
 
     async sendBroadcastAllPlayers(data) {
         this.players.map(async (socketUser) => {
-            socketUser.send(data)
+            await socketUser.send(data)
         })
     }
 

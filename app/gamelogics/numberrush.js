@@ -37,7 +37,7 @@ class NumberRush {
         this.scores[socketUser.user.userName] += 1
 
         let res = errorCode.processActionSuccess
-        res['data'] = { userName: socketUser.user.userName, pickNumber: pickNumber }
+        res['data'] = {userName: socketUser.user.userName, pickNumber: pickNumber, score: this.scores[socketUser.user.userName]}
 
         await this.boardController.sendBroadcastExceptMe(socketUser, res)
         await socketUser.send(res)

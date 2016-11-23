@@ -12,7 +12,7 @@ let errorCode = {
        
     success: {code: 1, msg: 'Your process is successful' },
     joinLobbySuccess: {code: 2, msg: 'User joined lobby' },
-    playerJoinBoard: { code: 3, msg: 'player join board' },
+    playerJoinBoard: { code: 3, msg: 'new player join board' },
     playerLeaveBoard: { code: 4, msg: 'player leave board' },
     startGame: { code: 5, msg: 'start game & send init game data' },
     syncGameData: { code: 6, msg: 'sync game data' },
@@ -20,6 +20,7 @@ let errorCode = {
 
     processActionSuccess: {code: 7, msg: 'Your action is success'},
     endGame: {code: 8, msg: 'End game'},
+    playerJoinBoardSuccess: { code: 9, msg: 'Player joined board success' },
 }
 
 module.exports = errorCode
