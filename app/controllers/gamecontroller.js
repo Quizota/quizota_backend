@@ -11,6 +11,7 @@ class GameController {
         game.gameData = { maxNumber: 3 }
         game.image = ''
         game.type = 'number_rush'
+        game.timeOut = 20000
 
         return game
     }

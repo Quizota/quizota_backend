@@ -1,8 +1,8 @@
 
 let errorCode = require('../models/errorcode')
-let gameController = require('./gameController')
+let gameController = require('./gamecontroller')
 let numberRush = require('../gamelogics/numberrush')
-let userController = require('./userController')
+let userController = require('./usercontroller')
 
 class BoardController {
 
@@ -11,6 +11,7 @@ class BoardController {
         this.players = []
         this.gameLogic = null
         this.isPlaying = false
+        this.timeOut = null
     }
 
     async joinBoard(socketUser) {        
@@ -39,6 +40,10 @@ class BoardController {
             }
         }
         this.sendBroadcastExceptMe(socketUser, errorCode.playerLeaveBoard)
+
+        if(this.isPlaying) {
+            this.gameLogic.endGame()
+        }
     }
 
     async sendBroadcastAllPlayers(data) {
@@ -61,6 +66,11 @@ class BoardController {
         returnData.data = await this.gameLogic.startGame()
         await this.sendBroadcastAllPlayers(returnData)
         this.isPlaying = true
+
+        let self = this
+        this.timeOut = setTimeout(async () => {
+            await self.gameLogic.endGame()        
+        }, gameData.timeOut)
     }
 
     isEmpty() {
@@ -117,10 +127,17 @@ class BoardController {
     }
 
     async endGame(winner, results) {
+        if(this.gameLogic === false) {
+            return
+        }
+        if(this.timeOut) {
+            clearTimeout(this.timeOut)
+        }
+
         this.isPlaying = false
 
         // calculate elo bonus from range elo between 2 players
-        let bonusElo = 20
+        let bonusElo = winner !== '' ? 20 : 0
         let res = errorCode.endGame
         res.data = { winName: winner, bonusElo: bonusElo, scores: results }
 

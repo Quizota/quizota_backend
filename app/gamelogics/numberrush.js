@@ -43,19 +43,27 @@ class NumberRush {
         await socketUser.send(res)
 
         if(this.currentNumber >= this.gameData.gameData.maxNumber) {
-
-            let winner = ''
-            let maxScore = 0
-
-            for(let userName in this.scores) {
-                if(this.scores[userName] > maxScore) {
-                    winner = userName
-                    maxScore = this.scores[userName]
-                }
-            }
-            await this.boardController.endGame(winner, this.scores)
+            await this.endGame()
         }
 
+    }
+
+    async endGame() {
+        let winner = ''
+        let maxScore = 0
+
+        for(let userName in this.scores) {
+            if(this.scores[userName] > maxScore) {
+                winner = userName
+                maxScore = this.scores[userName]
+            }
+        }
+
+        if(maxScore < this.gameData.gameData.maxNumber) {
+            winner = ''
+        }        
+
+        await this.boardController.endGame(winner, this.scores)
     }
 }
 
