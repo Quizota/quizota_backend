@@ -21,6 +21,8 @@ let errorCode = {
     processActionSuccess: {code: 7, msg: 'Your action is success'},
     endGame: {code: 8, msg: 'End game'},
     playerJoinBoardSuccess: { code: 9, msg: 'Player joined board success' },
+
+    chatInRoom: { code: 10, msg: 'chat in room' },
 }
 
 module.exports = errorCode

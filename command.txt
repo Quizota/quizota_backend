@@ -15,3 +15,6 @@
 { "cmd": "playNow", "data": {} }
 { "cmd": "syncGameData", "data": {"cmd": "gameAction", "data": { "pickNumber": "1"} } }
 { "cmd": "backLobby", "data": {} }
+
+
+{ "cmd": "chatInRoom", "data": { "msg": "hello"} }

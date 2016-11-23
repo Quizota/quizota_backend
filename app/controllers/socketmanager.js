@@ -61,6 +61,9 @@ class SocketManager {
                     case 'backLobby':
                         await this.backLobby(socketUser)
                         break;
+                    case 'chatInRoom':
+                        await this.chatInRoom(socketUser, data)
+                        break;
                     case 'findParticipant':
                         break;
                     default:
@@ -226,6 +229,14 @@ class SocketManager {
            this.leaveBoard(socketUser)
            this.joinLobby(socketUser)
        } 
+    }
+
+    async chatInRoom(socketUser, data) {
+        let res = errorCode.chatInRoom
+        let msg = data.msg
+        res.data = { displayName: socketUser.user.displayName, msg: msg }
+
+        await socketUser.publicMsgInCurrentRoom(res)
     }
 }
 

@@ -30,7 +30,7 @@ class SocketUser {
     }
 
     async publicMsgInCurrentRoom(msg) {
-        this.socket.to(this.currentRoom).emit('im', msg)
+        this.socket.to(this.currentRoom).emit('data', msg)
     }
 
     isInLobby() {
