@@ -33,6 +33,7 @@ class UserController {
         }
         
         user.userName = newUserName
+        user.isDefined = true
         await user.setPassword(password)
 
         await user.promise.save()
@@ -53,6 +54,13 @@ class UserController {
     async updateElo(user, bonusElo) {
         user.updateElo(bonusElo)
         await user.promise.save()
+    }
+
+    async getLeaderBoard() {
+        return await User.find({isDefined: true})
+            .sort({elo: -1})
+            .select({displayName: 1, userName: 1, elo: 1, level: 1})
+            .limit(20)
     }
 
 }

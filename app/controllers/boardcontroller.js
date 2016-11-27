@@ -1,8 +1,9 @@
 
 let errorCode = require('../models/errorcode')
 let gameController = require('./gamecontroller')
-let numberRush = require('../gamelogics/numberrush')
+let NumberRush = require('../gamelogics/numberrush')
 let userController = require('./usercontroller')
+let VietnamChallenge = require('../gamelogics/vietnamechallenge')
 
 class BoardController {
 
@@ -61,16 +62,20 @@ class BoardController {
         let returnData = errorCode.startGame
 
         if(gameData.type === 'number_rush') {
-            this.gameLogic = new numberRush(this, gameData)
+            this.gameLogic = new NumberRush(this, gameData)
+        } else if(gameData.type === 'vietnam_challenge') {
+            this.gameLogic = new VietnamChallenge(this, gameData)
         }
         returnData.data = await this.gameLogic.startGame()
         await this.sendBroadcastAllPlayers(returnData)
         this.isPlaying = true
 
         let self = this
-        this.timeOut = setTimeout(async () => {
-            await self.gameLogic.endGame()        
-        }, gameData.timeOut)
+        if(gameData.timeOut > 0) {
+            this.timeOut = setTimeout(async () => {
+                await self.gameLogic.endGame()       
+            }, gameData.timeOut)
+        }
     }
 
     isEmpty() {

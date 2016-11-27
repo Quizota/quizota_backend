@@ -30,7 +30,14 @@ let userSchema = mongoose.Schema( {
         default: 1200
     },
     achievements: [Number],
-
+    isDefined: {
+        type: Boolean,
+        default: false
+    },
+    exp: {
+        type: Number,
+        default: 0
+    }
 })
 
 userSchema.methods.validatePassword = async function(password) {

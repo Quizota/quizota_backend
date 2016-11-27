@@ -64,6 +64,9 @@ class SocketManager {
                     case 'chatInRoom':
                         await this.chatInRoom(socketUser, data)
                         break;
+                    case 'leaderBoard':
+                        await this.leaderBoard(socketUser)
+                        break;
                     case 'findParticipant':
                         break;
                     default:
@@ -237,6 +240,13 @@ class SocketManager {
         res.data = { displayName: socketUser.user.displayName, msg: msg }
 
         await socketUser.publicMsgInCurrentRoom(res)
+    }
+
+    async leaderBoard(socketUser) {
+        let leaderBoard = await UserController.getLeaderBoard()
+        let res = errorCode.success
+        res.data = leaderBoard
+        socketUser.send(res)
     }
 }
 

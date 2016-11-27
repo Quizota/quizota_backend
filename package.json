@@ -29,6 +29,7 @@
     "express": "^4.12.4",
     "express-session": "^1.11.2",
     "express-then": "^1.0.2",
+    "geolib": "^2.0.22",
     "jquery": "^2.1.4",
     "lodash": "^3.9.0",
     "mongoose": "^4.6.8",
