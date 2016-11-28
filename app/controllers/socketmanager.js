@@ -31,7 +31,7 @@ class SocketManager {
 
             socket.on('data', async (dataEvent) => {
                 console.log(dataEvent)
-                let jsonData = JSON.parse(dataEvent)
+                let jsonData = dataEvent.constructor === String ? JSON.parse(dataEvent) : dataEvent
                 let cmd = jsonData.cmd
                 let data = jsonData.data
 
