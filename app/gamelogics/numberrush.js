@@ -59,7 +59,7 @@ class NumberRush {
             }
         }
 
-        if(maxScore < this.gameData.gameData.maxNumber) {
+        if(maxScore !== 0) {
             winner = ''
         }        
 
