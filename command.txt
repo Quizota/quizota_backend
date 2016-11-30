@@ -27,3 +27,6 @@
 
 
 { "cmd": "leaderBoard", "data": {} }
+
+
+{ "cmd": "getMyInfo", "data": {} }

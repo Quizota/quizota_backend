@@ -69,7 +69,10 @@ class SocketManager {
                         await this.leaderBoard(socketUser)
                         break;
                     case 'findParticipant':
-                        await findParticipant()
+                        await this.findParticipant()
+                        break;
+                    case 'getMyInfo':
+                        await this.getMyInfo(socketUser)
                         break;
                     default:
                         socketUser.send(errorCode.commandNotFound)
@@ -258,6 +261,15 @@ class SocketManager {
     }
 
     async findParticipant(socketUser, data) {
+    }
+
+    async getMyInfo(socketUser) {
+        let res = errorCode.success
+        res.data = {
+            profile: socketUser.user,
+            gameList: GameController.gameList
+        }
+        socketUser.send(res)
     }
 }
 
