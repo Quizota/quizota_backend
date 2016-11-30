@@ -3,6 +3,7 @@ let UserController = require('./usercontroller')
 let errorCode = require('../models/errorcode')
 let SocketUser = require('./socketuser')
 let BoardController = require('./boardcontroller')
+let GameController = require('./gamecontroller')
 
 
 class SocketManager {
@@ -68,6 +69,7 @@ class SocketManager {
                         await this.leaderBoard(socketUser)
                         break;
                     case 'findParticipant':
+                        await findParticipant()
                         break;
                     default:
                         socketUser.send(errorCode.commandNotFound)
@@ -148,7 +150,8 @@ class SocketManager {
         // send data lobby to user
         let data = {
             profile: socketUser.user,
-            boardList: boardList
+            boardList: boardList,
+            gameList: GameController.gameList
         }
 
         let resData = errorCode.joinLobbySuccess
@@ -161,6 +164,11 @@ class SocketManager {
         for(let userName in this.userSockets) {
             if(userName !== socketUser.user.userName) {
                 let participant = this.userSockets[userName]
+
+                if(!participant.isInLobby()) {
+                    continue
+                }
+
                 return this.createBoard(socketUser, participant)
             }
         }
@@ -247,6 +255,9 @@ class SocketManager {
         let res = errorCode.success
         res.data = leaderBoard
         socketUser.send(res)
+    }
+
+    async findParticipant(socketUser, data) {
     }
 }
 

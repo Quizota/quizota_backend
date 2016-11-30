@@ -7,7 +7,8 @@ let gameSchema = mongoose.Schema( {
     levelUnlock: Number,
     type: String,
     gameData: mongoose.Schema.Types.Mixed,
-    timeOut: Number
+    timeOut: Number,
+    active: Boolean
 })
 
 module.exports = mongoose.model('Game', gameSchema)

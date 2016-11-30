@@ -138,6 +138,10 @@ class VietnamChallenge {
         return Math.round(bonus < 0 ? 0 : bonus)
     }
 
+    getGameId() {
+        return this.gameData.id
+    }
+
 }
 
 module.exports = VietnamChallenge

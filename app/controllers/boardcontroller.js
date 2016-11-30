@@ -146,16 +146,24 @@ class BoardController {
         let res = errorCode.endGame
         res.data = { winName: winner, bonusElo: bonusElo, scores: results }
 
-        let player = this.getPlayerByUserName(winner)
-
-        if(player) {
-            await userController.updateElo(player.user, bonusElo)
-        }
+        this.saveBonus(winner, bonusElo)
 
         await this.sendBroadcastAllPlayers(res)
     }
 
-    
+    async saveBonus(winner, bonusElo) {
+        this.players.map(async (socketUser) => {
+            if(winner === '') {
+                await userController.updateElo(socketUser.user, 0, this.gameLogic.getGameId)
+            } else {
+                if (socketUser.user.userName === winner) {
+                    await userController.updateElo(socketUser.user, bonusElo, this.gameLogic.getGameId)
+                } else{
+                    await userController.updateElo(socketUser.user, -1, this.gameLogic.getGameId)
+                }
+            }
+        })
+    }
 
 }
 

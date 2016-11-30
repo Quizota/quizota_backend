@@ -65,6 +65,10 @@ class NumberRush {
 
         await this.boardController.endGame(winner, this.scores)
     }
+
+    getGameId() {
+        return this.gameData.id
+    }
 }
 
 module.exports = NumberRush

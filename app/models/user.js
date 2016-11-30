@@ -15,7 +15,10 @@ let userSchema = mongoose.Schema( {
     },
     gameUnlocked: [
         { 
-            gameId: Number,
+            gameId: {
+                type: Number,
+                unique: true                
+            },
             win: Number,
             lose: Number
         }

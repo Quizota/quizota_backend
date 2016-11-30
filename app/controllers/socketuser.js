@@ -42,7 +42,7 @@ class SocketUser {
     }
 
     async joinBoard(boardName) {
-        this.socket.leave(LOBBY_NAME)
+        this.socket.leave(this.currentRoom)
         this.socket.join(boardName)
         this.currentRoom = boardName
     }
