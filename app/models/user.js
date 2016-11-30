@@ -6,7 +6,6 @@ let userSchema = mongoose.Schema( {
     displayName: String,
     userName: {
         type: String,
-        index: true,
         unique: true
     },
     password: String,
@@ -41,6 +40,9 @@ let userSchema = mongoose.Schema( {
 })
 
 userSchema.methods.validatePassword = async function(password) {
+    if(!this.isDefined)
+        return true
+
     let hash = await crypto.promise.pbkdf2(password, PEPPER, 4096, 512, 'sha256')
     return hash.toString('hex') === this.password
 }
@@ -53,5 +55,6 @@ userSchema.methods.setPassword = async function(password) {
 userSchema.methods.updateElo = async function(increaseElo) {
     this.elo += increaseElo
 }
+
 
 module.exports = mongoose.model('User', userSchema)

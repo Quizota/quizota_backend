@@ -14,6 +14,7 @@ class UserController {
     }
 
     async autoSignup(displayName) {
+
         let userName = uuid.v1()
 
         let user = new User()
