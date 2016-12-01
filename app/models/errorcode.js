@@ -28,6 +28,8 @@ let errorCode = {
 
     getMyInfo: { code: 'getMyInfo', msg: 'my info success' },
     leaderBoard: { code: 'leaderBoard', msg: 'leader Board Info' },
+
+    waitingStartGame: { code: 'waitingStartGame', msg: 'Waiting start game' },
 }
 
 module.exports = errorCode

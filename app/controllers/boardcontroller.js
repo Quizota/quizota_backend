@@ -59,17 +59,25 @@ class BoardController {
 
     async startGame() { 
         let timeWait = 5000
-        console.log('Start game after: ' + timeWait)   
-        setTimeout(async () => {
-            let gameData = await gameController.getRandomGameData()
-            let returnData = errorCode.startGame
+        console.log('Start game after: ' + timeWait)
 
-            if(gameData.type === 'number_rush') {
-                this.gameLogic = new NumberRush(this, gameData)
-            } else if(gameData.type === 'vietnam_challenge') {
-                this.gameLogic = new VietnamChallenge(this, gameData)
-            }
+        let waitingStart = errorCode.waitingStartGame
+        waitingStart.data = {waitingTime: timeWait}
+        await this.sendBroadcastAllPlayers(waitingStart)
+
+
+        let gameData = await gameController.getRandomGameData()
+        if(gameData.type === 'number_rush') {
+            this.gameLogic = new NumberRush(this, gameData)
+        } else if(gameData.type === 'vietnam_challenge') {
+            this.gameLogic = new VietnamChallenge(this, gameData)
+        }
+
+        setTimeout(async () => {
+            
+            let returnData = errorCode.startGame
             returnData.data = await this.gameLogic.startGame()
+
             await this.sendBroadcastAllPlayers(returnData)
             this.isPlaying = true
 
