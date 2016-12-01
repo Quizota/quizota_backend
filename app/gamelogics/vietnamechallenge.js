@@ -14,6 +14,7 @@ class VietnamChallenge {
         this.scores = {}
         this.countAnswer = 0
         this.lastAnswer = ''
+        this.lastStartTime = Date.now()
 
         this.boardController.players.map( socketUser => {
             this.scores[socketUser.user.userName] = 0
@@ -57,6 +58,7 @@ class VietnamChallenge {
 
         this.countAnswer = 0
         this.lastAnswer = ''
+        this.lastStartTime = Date.now()
 
         this.timeOut = setTimeout(async() => {
             if (this.currentQuestion === this.game.gameData.totalQuestion) {
@@ -82,15 +84,17 @@ class VietnamChallenge {
             clearTimeout(this.timeOut)
         }
 
-        let bonus = this.calculateBonus(lat, lng)
-        this.scores[socketUser.user.userName] += bonus
+        let resultData = this.calculateBonus(lat, lng)
+        this.scores[socketUser.user.userName] += resultData.bonus
 
         let isEndGame = this.currentQuestion === this.game.gameData.totalQuestion
 
         let res = errorCode.processActionSuccess
         res['data'] = {
             userName: socketUser.user.userName, score: this.scores[socketUser.user.userName],
-            bonus: bonus, pickData: { lat: lat, lng: lng }
+            bonus: resultData.bonus, pickData: { lat: lat, lng: lng },
+            time: (Date.now() - this.lastStartTime) / 1000, distance: resultData.distance
+
         }
 
         if(!isEndGame && isFinish) {
@@ -130,12 +134,12 @@ class VietnamChallenge {
         let questLocation = {latitude: quest.latitude, longitude: quest.longitude}
         
         let distance = geolib.getDistance(location, questLocation, 10, 1) / 1000
-        console.log('distance (km): ' + distance)
+        //console.log('distance (km): ' + distance)
         let maxDistance = 500
         let maxBonus = 100
 
         let bonus = maxBonus - maxBonus * (distance / maxDistance)
-        return Math.round(bonus < 0 ? 0 : bonus)
+        return {bonus: Math.round(bonus < 0 ? 0 : bonus), distance: distance}
     }
 
     getGameId() {

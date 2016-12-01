@@ -1,0 +1,4 @@
+* Backup
+mongodump --collection provinces --db quizota --out dump/
+* Restore
+mongorestore dump/
