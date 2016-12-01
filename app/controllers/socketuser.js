@@ -19,13 +19,13 @@ class SocketUser {
         this.socket.join(LOBBY_NAME)
         this.currentRoom = LOBBY_NAME
 
-        let resData = errorCode.chatMessage
+        let resData = errorCode.newUserJoinLobby
         resData.msg = `${this.user.displayName} joined lobby`
         await this.publicMsgInCurrentRoom(resData)
     }
 
     async forceLogout() {
-        this.socket.emit('im', errorCode.anotherLogin)
+        this.send(errorCode.anotherLogin)
         this.socket.disconnect(true)
     }
 

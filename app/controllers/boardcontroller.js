@@ -16,7 +16,7 @@ class BoardController {
     }
 
     async joinBoard(socketUser) {        
-        let newJoin = errorCode.playerJoinBoard
+        let newJoin = errorCode.newPlayerJoinBoard
         newJoin.data = { user: socketUser.user }
         await this.sendBroadcastAllPlayers(newJoin)
 
@@ -87,16 +87,11 @@ class BoardController {
         this.players.map( player => {
             playerNames.push(player.user.userName)
         })
-
-        let gameInfo = {
-            name: 'game test',
-            img: 'images/games/gametest.png'
-        }
-
+ 
         return {
             roomName: this.boardName,
             players: playerNames,
-            gameInfo: gameInfo
+            gameInfo: this.gameLogic.game
         }
     }
 

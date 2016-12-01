@@ -110,7 +110,6 @@ class SocketManager {
     async autoSignup(socket, data) {
         let displayName = data.displayName
         let user = await UserController.autoSignup(displayName)
-        socket.emit('im', { code: 1, msg: `auto register success: ${displayName}`})
 
         await this.addNewUser(socket, user)
     }
@@ -125,6 +124,7 @@ class SocketManager {
             return socket.emit('data', errorCode.loginFailed)
         }
         await this.addNewUser(socket, user)
+
     }
 
     async addNewUser(socket, user) { 
@@ -137,6 +137,14 @@ class SocketManager {
 
         this.userBySocketIds[socket.id] = user
         this.userSockets[user.userName] = socketUser
+
+
+        let res = errorCode.loginSuccess
+        res.data = {
+            profile: socketUser.user,
+            gameList: GameController.gameList
+        }
+        socketUser.send(res)
 
         await this.joinLobby(socketUser)
     }
@@ -152,9 +160,7 @@ class SocketManager {
 
         // send data lobby to user
         let data = {
-            profile: socketUser.user,
-            boardList: boardList,
-            gameList: GameController.gameList
+            boardList: boardList
         }
 
         let resData = errorCode.joinLobbySuccess
@@ -255,7 +261,7 @@ class SocketManager {
 
     async leaderBoard(socketUser) {
         let leaderBoard = await UserController.getLeaderBoard()
-        let res = errorCode.success
+        let res = errorCode.leaderBoard
         res.data = leaderBoard
         socketUser.send(res)
     }
@@ -264,7 +270,7 @@ class SocketManager {
     }
 
     async getMyInfo(socketUser) {
-        let res = errorCode.success
+        let res = errorCode.getMyInfo
         res.data = {
             profile: socketUser.user,
             gameList: GameController.gameList
