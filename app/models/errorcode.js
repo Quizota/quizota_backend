@@ -7,6 +7,8 @@ let errorCode = {
     userNameExist: {code: 'userNameExist', msg: 'Your username is existed'},
     loginFailed: {code: 'loginFailed', msg: 'Your username or password is wrong'},
 
+    signupFailed: {code: 'signupFailed', msg: 'Display name required minimum 3 characters'},
+
     processActionFailed: {code: 'processActionFailed', msg: 'Your action is fail'},
     gameNotPlay: {code: 'gameNotPlay', msg: 'Game is not play'},
        

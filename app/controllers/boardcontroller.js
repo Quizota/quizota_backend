@@ -101,8 +101,17 @@ class BoardController {
             return await socketUser.send(errorCode.gameNotPlay)
         }
 
-        let gameCmd = gameData.cmd
-        let data = gameData.data
+        let jsonData = {} 
+        try {
+            if(gameData !== null) {
+                jsonData = gameData.constructor === String ? JSON.parse(gameData) : gameData
+            }
+        } catch(err) {
+            console.error(err)
+        }
+
+        let gameCmd = jsonData.cmd
+        let data = jsonData.data
 
         switch(gameCmd) {
             case 'gameAction':

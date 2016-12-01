@@ -25,14 +25,15 @@ class SocketManager {
                 await this.removeSocket(socket)
             })
 
-            socket.on('im', async (msg) => {
-                console.log(msg)
-                await this.publicMsg(msg)
-            })
-
             socket.on('data', async (dataEvent) => {
                 console.log(dataEvent)
-                let jsonData = dataEvent.constructor === String ? JSON.parse(dataEvent) : dataEvent
+                let jsonData = {} 
+                try {
+                    jsonData = dataEvent.constructor === String ? JSON.parse(dataEvent) : dataEvent
+                } catch(err) {
+                    console.error(err)
+                }
+
                 let cmd = jsonData.cmd
                 let data = jsonData.data
 
@@ -103,14 +104,14 @@ class SocketManager {
         }
     }
 
-    async publicMsg(msg) {
-        this.io.emit('im', msg)
-    }
-
     async autoSignup(socket, data) {
         let displayName = data.displayName
-        let user = await UserController.autoSignup(displayName)
 
+        if(displayName === null || displayName.length < 3) {
+            return socket.emit('data', errorCode.signupFailed)
+        }
+
+        let user = await UserController.autoSignup(displayName)
         await this.addNewUser(socket, user)
     }
 
@@ -189,14 +190,14 @@ class SocketManager {
         let boardName = `${socketUser.user.userName}_${participant.user.userName}`
         let board = new BoardController(boardName)
 
-        this.boardControllers[boardName] = board
-
         console.log(`Board create: ${boardName}`)
 
         await board.joinBoard(socketUser)
         await board.joinBoard(participant)
 
         await board.startGame()
+
+        this.boardControllers[boardName] = board
     }
 
     async syncGameData(socketUser, data) {
