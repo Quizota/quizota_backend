@@ -57,25 +57,30 @@ class BoardController {
         socketUser.socket.to(this.boardName).emit('data', data)
     }
 
-    async startGame() {        
-        let gameData = await gameController.getRandomGameData()
-        let returnData = errorCode.startGame
+    async startGame() { 
+        let timeWait = 5000
+        console.log('Start game after: ' + timeWait)   
+        setTimeout(async () => {
+            let gameData = await gameController.getRandomGameData()
+            let returnData = errorCode.startGame
 
-        if(gameData.type === 'number_rush') {
-            this.gameLogic = new NumberRush(this, gameData)
-        } else if(gameData.type === 'vietnam_challenge') {
-            this.gameLogic = new VietnamChallenge(this, gameData)
-        }
-        returnData.data = await this.gameLogic.startGame()
-        await this.sendBroadcastAllPlayers(returnData)
-        this.isPlaying = true
+            if(gameData.type === 'number_rush') {
+                this.gameLogic = new NumberRush(this, gameData)
+            } else if(gameData.type === 'vietnam_challenge') {
+                this.gameLogic = new VietnamChallenge(this, gameData)
+            }
+            returnData.data = await this.gameLogic.startGame()
+            await this.sendBroadcastAllPlayers(returnData)
+            this.isPlaying = true
 
-        let self = this
-        if(gameData.timeOut > 0) {
-            this.timeOut = setTimeout(async () => {
-                await self.gameLogic.endGame()       
-            }, gameData.timeOut)
-        }
+            let self = this
+            if(gameData.timeOut > 0) {
+                this.timeOut = setTimeout(async () => {
+                    await self.gameLogic.endGame()       
+                }, gameData.timeOut)
+            }
+            console.log('-------Game started----')
+        }, timeWait)
     }
 
     isEmpty() {
