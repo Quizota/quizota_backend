@@ -7,7 +7,7 @@ let wrap = require('nodeifyit')
 let User = require('../models/user')
 
 let LocalStrategy = require('passport-local').Strategy
-let uuid = require('node-uuid')
+let uuid = require('uuid')
 
 
 // Handlers

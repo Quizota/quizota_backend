@@ -3,7 +3,7 @@
  */
 
 let User = require('../models/user')
-let uuid = require('node-uuid')
+let uuid = require('uuid')
 
 let GameController = require('./gamecontroller')
 
