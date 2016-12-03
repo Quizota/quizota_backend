@@ -24,7 +24,7 @@
 *** Game Vietnam Challenge
 { "cmd": "playNow", "data": {} }
 { "cmd": "syncGameData", "data": {"cmd": "gameAction", "data": { "lat": 18.2943776, "lng": 105.6745247 } } }
-
+{ "cmd": "backLobby", "data": {} }
 
 { "cmd": "leaderBoard", "data": {} }
 
