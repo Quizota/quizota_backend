@@ -27,7 +27,7 @@ class SocketManager {
 
             socket.on('data', async (dataEvent) => {
                 console.log(dataEvent)
-                let jsonData = {} 
+                let jsonData = {}
                 try {
                     jsonData = dataEvent.constructor === String ? JSON.parse(dataEvent) : dataEvent
                 } catch(err) {
@@ -183,12 +183,17 @@ class SocketManager {
             }
         }
 
+        let newNpc = await this.genNewNPC()
+        if(newNpc) {
+            return this.createBoard(socketUser, newNpc)
+        }
+
         socketUser.send(errorCode.notFoundParticipant)
     }
 
     async createBoard(socketUser, participant) {
         let boardName = `${socketUser.user.userName}_${participant.user.userName}`
-        let board = new BoardController(boardName)
+        let board = new BoardController(this, boardName)
 
         console.log(`Board create: ${boardName}`)
 
@@ -233,11 +238,12 @@ class SocketManager {
     }
 
     async leaveBoard(socketUser) {
+        
         let lastRoom = socketUser.currentRoom
         if(lastRoom in this.boardControllers) {
             let board = this.boardControllers[lastRoom]
             board.leaveBoard(socketUser)
-
+            
             if(board.isEmpty()) {
                 console.log(`Remove board: ${lastRoom}`)
                 delete this.boardControllers[lastRoom]
@@ -277,6 +283,14 @@ class SocketManager {
             gameList: GameController.gameList
         }
         socketUser.send(res)
+    }
+
+    async genNewNPC() {
+        let npc = await UserController.genNewNPC()
+        let socketUser = new SocketUser(null, npc)
+
+        this.userSockets[npc.userName] = socketUser
+        return socketUser
     }
 }
 

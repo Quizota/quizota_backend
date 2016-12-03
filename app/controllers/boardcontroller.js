@@ -7,12 +7,15 @@ let VietnamChallenge = require('../gamelogics/vietnamechallenge')
 
 class BoardController {
 
-    constructor(boardName) {
+    constructor(socketManager, boardName) {
+        this.socketManager = socketManager
         this.boardName = boardName
         this.players = []
         this.gameLogic = null
         this.isPlaying = false
         this.timeOut = null
+
+        this.isHasNPC = false
     }
 
     async joinBoard(socketUser) {        
@@ -30,6 +33,10 @@ class BoardController {
 
         await socketUser.joinBoard(this.boardName)
         this.players.push(socketUser)
+
+        if(socketUser.isNpc()) {
+            this.isHasNPC = true
+        }
     }
 
     async leaveBoard(socketUser) {
@@ -54,7 +61,9 @@ class BoardController {
     }
 
     async sendBroadcastExceptMe(socketUser, data) {
-        socketUser.socket.to(this.boardName).emit('data', data)
+        if(!socketUser.isNpc()) {
+            socketUser.socket.to(this.boardName).emit('data', data)
+        }
     }
 
     async startGame() { 
@@ -166,6 +175,16 @@ class BoardController {
         this.saveBonus(winner, bonusElo)
 
         await this.sendBroadcastAllPlayers(res)
+
+        let self = this
+        setTimeout(function() {
+            console.log('timer kick user not back lobby')
+
+            for(let i = 0; i < self.players.length; i++) {
+                self.socketManager.backLobby(self.players[i])
+                i--
+            }
+        }, 5000)
     }
 
     async saveBonus(winner, bonusElo) {
@@ -180,6 +199,15 @@ class BoardController {
                 }
             }
         })
+    }
+
+    getNPC() {
+        for(let i = 0; i < this.players.length; i++) {
+            if(this.players[i].isNpc()) {
+                return this.players[i]
+            }
+        }
+        return null
     }
 
 }

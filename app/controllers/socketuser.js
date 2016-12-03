@@ -12,11 +12,15 @@ class SocketUser {
     async joinLobby() {
 
         if(!this.isInLobby()) {
-            this.socket.leave(this.currentRoom)
+            if(!this.isNpc()) {
+                this.socket.leave(this.currentRoom)
+            }
         }
 
         console.log(`Join lobby: ${this.user.displayName}`)
-        this.socket.join(LOBBY_NAME)
+        if(!this.isNpc()) {
+            this.socket.join(LOBBY_NAME)
+        }
         this.currentRoom = LOBBY_NAME
 
         let resData = errorCode.newUserJoinLobby
@@ -25,12 +29,16 @@ class SocketUser {
     }
 
     async forceLogout() {
-        this.send(errorCode.anotherLogin)
-        this.socket.disconnect(true)
+        if(!this.isNpc()) {
+            this.send(errorCode.anotherLogin)
+            this.socket.disconnect(true)
+        }
     }
 
     async publicMsgInCurrentRoom(msg) {
-        this.socket.to(this.currentRoom).emit('data', msg)
+        if(!this.isNpc()) {
+            this.socket.to(this.currentRoom).emit('data', msg)
+        }
     }
 
     isInLobby() {
@@ -38,13 +46,22 @@ class SocketUser {
     }
 
     async send(msg) {
-        this.socket.emit('data', msg)
+        if(!this.isNpc()) {
+            this.socket.emit('data', msg)
+        }
     }
 
     async joinBoard(boardName) {
-        this.socket.leave(this.currentRoom)
-        this.socket.join(boardName)
+        
+        if(!this.isNpc()) {
+            this.socket.leave(this.currentRoom)
+            this.socket.join(boardName)
+        }
         this.currentRoom = boardName
+    }
+
+    isNpc() {
+        return this.socket === null
     }
 }
 

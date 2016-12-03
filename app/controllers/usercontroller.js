@@ -6,6 +6,7 @@ let User = require('../models/user')
 let uuid = require('uuid')
 
 let GameController = require('./gamecontroller')
+let utils = require('./utils')
 
 
 
@@ -86,6 +87,37 @@ class UserController {
             .sort({elo: -1})
             .select({displayName: 1, userName: 1, elo: 1, level: 1})
             .limit(20)
+    }
+
+    async genNewNPC() {
+
+        let userNames = [['phuong12345681', 'Phuong TT'], ['hieu772661', 'Hieu TranP'], 
+            ['thuan7762', 'Thuan TR'], ['hung7s77', 'Hung HHA'], ['than737j', 'Than LV'], 
+            ['tri837c', 'Tri TTN'], ['trunghhc8', 'Trung HC'], ['hoi887s', 'Hoi Huong'], 
+            ['tuanusa8c', 'Tuan NA'], ['teoem88d', 'Teo LV'], ['thuc776s', 'Thuc TA'], 
+            ['hieutran8871', 'Hieu MV'], ['huong772c', 'Huong LT'], ['jack827cc', 'Jack Jill'], 
+            ['chales8271', 'Chales Nguyen'], ['lucky7666s', 'Lucky Game'], ['sang8837', 'Sang PH'], 
+            ['ve8872', 'Ve TV'], ['xuan887cc', 'Xuan TTA'], ['tai99882c', 'Tai NgoT']]
+
+        let npc = utils.getRandomInt(0, userNames.length - 1)
+        let userName = userNames[npc][0]
+
+        let other = await User.promise.findOne({userName: userName})
+        if(other) {
+            return other
+        }
+
+        let user = new User()
+        user.userName = userName
+        user.displayName = userNames[npc][1]
+        user.password = ''
+
+        user.gameUnlocked.push({gameId: 1, win: 0, lose: 0})
+        user.gameUnlocked.push({gameId: 2, win: 0, lose: 0})
+
+        await user.promise.save()      
+        
+        return user
     }
 
 }

@@ -5,6 +5,8 @@ let provinceController = require('../controllers/provincecontroller')
 let geolib = require('geolib')
 const bufferDelayNewQuestion = 2000
 
+let utils = require('../controllers/utils')
+
 class VietnamChallenge {
 
     constructor(boardController, gameData) {
@@ -35,6 +37,8 @@ class VietnamChallenge {
 
         await this.startQuestionTimer(false)
 
+        this.schedulerNPC()
+
         return { game: this.game, data: { 'newQuestion': this.randomQuestion(), 'questionNo': this.currentQuestion } }
     }
 
@@ -55,6 +59,9 @@ class VietnamChallenge {
     async startQuestionTimer(isRandomNewQuestion) {
         if(isRandomNewQuestion) {
             this.randomQuestionAndSendToPlayers()
+
+            this.schedulerNPC()
+            
         }
 
         this.countAnswer = 0
@@ -149,6 +156,25 @@ class VietnamChallenge {
 
     getGameId() {
         return this.gameData.id
+    }
+
+    schedulerNPC() {
+        if(this.boardController.isHasNPC) {
+            let timeRandom = utils.getRandomInt(this.game.gameData.questionTimeout / 3, this.game.gameData.questionTimeout - 2)
+            console.log('NPC answer after: ' + timeRandom)
+            setTimeout(() => {
+                let npc = this.boardController.getNPC()
+                if(npc) {
+                    let province = provinceController.randomProvince()
+                    if(province) {
+                        console.log('NPC anwsered')
+                        //console.log(province)
+                        let data = {lat: province.latitude, lng: province.longitude}                          
+                        this.processAction(npc, data)
+                    }
+                }
+            }, timeRandom)
+        }
     }
 
 }
