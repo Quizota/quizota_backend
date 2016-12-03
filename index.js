@@ -11,7 +11,7 @@ let port = process.env.PORT || 8000
 let app = new App(config, __dirname)
 app.initialize(port)
     .then(() => {
-      console.log(`Listening @ http://127.0.0.1:${port}`)
+      console.log(`Listening @ http://0.0.0.0:${port}`)
     })
 
 
