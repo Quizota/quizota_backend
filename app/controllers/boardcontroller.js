@@ -184,7 +184,7 @@ class BoardController {
                 self.socketManager.backLobby(self.players[i])
                 i--
             }
-        }, 5000)
+        }, 20000)
     }
 
     async saveBonus(winner, bonusElo) {
