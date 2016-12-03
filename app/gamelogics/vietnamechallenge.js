@@ -3,6 +3,7 @@ let shuffle = require('shuffle-array')
 let errorCode = require('../models/errorcode')
 let provinceController = require('../controllers/provincecontroller')
 let geolib = require('geolib')
+const bufferDelayNewQuestion = 2000
 
 class VietnamChallenge {
 
@@ -97,16 +98,20 @@ class VietnamChallenge {
 
         }
 
-        if(!isEndGame && isFinish) {
-            res['data']['newQuestion'] = this.randomQuestion()
-        }
-
         await this.boardController.sendBroadcastAllPlayers(res)
+
+        if(!isEndGame && isFinish) {
+            let self = this
+            setTimeout(function() {
+                self.startQuestionTimer(true)
+            }, bufferDelayNewQuestion)
+        }
         
         if(isFinish && isEndGame) {
-            await this.endGame()
-        } else if(isFinish) {
-            this.startQuestionTimer(false)
+            let self = this
+            setTimeout(function() {
+                self.endGame()
+            }, bufferDelayNewQuestion)
         }
     }
 

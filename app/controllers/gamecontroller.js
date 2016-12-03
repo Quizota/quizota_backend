@@ -20,7 +20,7 @@ class GameController {
         game = new Game()
         game.id = 2
         game.name = 'Vietnam Challange'
-        game.gameData = { totalQuestion: 3, questionTimeout: 10000 }
+        game.gameData = { totalQuestion: 5, questionTimeout: 15000 }
         game.image = 'img/game/game_icon_2.png'
         game.type = 'vietnam_challenge'
         game.timeOut = 0
