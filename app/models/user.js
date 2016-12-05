@@ -14,10 +14,9 @@ let userSchema = mongoose.Schema( {
         default: 'images/avatar/default.png'
     },
     gameUnlocked: [
-        { 
+        {
             gameId: {
-                type: Number,
-                unique: true                
+                type: Number
             },
             win: Number,
             lose: Number

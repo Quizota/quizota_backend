@@ -1,3 +1,6 @@
+pm2 start index.js --interpreter ./node_modules/.bin/babel-node
+
+
 { "cmd": "autoRegister", "data": { "displayName": "phuong"} }
 
 { "cmd": "playNow", "data": {} }
