@@ -4,7 +4,10 @@ let errorCode = {
     commandNotFound: { code: 'commandNotFound', msg: 'command not found' },
     anotherLogin: { code: 'anotherLogin', msg: 'Your account has new connection from other device' },
     notFoundParticipant: { code: 'notFoundParticipant', msg: 'Not found participant' },
-    userNameExist: {code: 'userNameExist', msg: 'Your username is existed'},
+
+    saveUserFail: {code: 'saveUserFail', msg: 'Your username is existed'},
+    saveUserSuccess: {code: 'saveUserSuccess', msg: 'Your info is saved'},
+
     loginFailed: {code: 'loginFailed', msg: 'Your username or password is wrong'},
 
     signupFailed: {code: 'signupFailed', msg: 'Display name required minimum 3 characters'},
@@ -30,6 +33,8 @@ let errorCode = {
     leaderBoard: { code: 'leaderBoard', msg: 'leader Board Info' },
 
     waitingStartGame: { code: 'waitingStartGame', msg: 'Waiting start game' },
+
+    requireSaveUser: { code: 'requireSaveUser', msg: 'require user save info' },
 }
 
 module.exports = errorCode

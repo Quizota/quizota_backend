@@ -195,6 +195,15 @@ class BoardController {
             }
         }, 40000)
 
+        setTimeout(function() {
+            for(let i = 0; i < self.players.length; i++) {
+                let su = self.players[i]
+                if(su && !su.user.isDefined) {
+                    su.send(errorCode.requireSaveUser)
+                }
+            }
+        }, 10000)
+
     }
 
     async saveBonus(winner, bonusElo) {

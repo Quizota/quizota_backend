@@ -176,8 +176,12 @@ class SocketManager {
 
     async playNow(socketUser) {
         let findTime = 2000
-
         setTimeout(async () => {
+            if(!socketUser.isInLobby()){
+                console.log(socketUser.user.displayName + " is in game board, not playnow")
+                return
+            }
+
             for(let userName in this.userSockets) {
                 if(userName !== socketUser.user.userName) {
                     let participant = this.userSockets[userName]
@@ -235,7 +239,7 @@ class SocketManager {
 
         let user = await UserController.saveUser(socketUser.user, newUsername, password)
         if(!user) {
-            return await socketUser.send(errorCode.userNameExist)
+            return await socketUser.send(errorCode.saveUserFail)
         }
 
         socketUser.user = user
@@ -244,7 +248,7 @@ class SocketManager {
 
         delete this.userSockets[oldUserName]
         
-        socketUser.send(errorCode.success)
+        socketUser.send(errorCode.saveUserSuccess)
     }
 
     async leaveBoard(socketUser) {
