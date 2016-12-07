@@ -70,7 +70,7 @@ class VietnamChallenge {
 
         this.timeOut = setTimeout(async() => {
             if (this.currentQuestion === this.game.gameData.totalQuestion) {
-                console.log('-------END GAME---------')
+                console.log('-------END GAME--' + ', ' + this.boardController.boardName)
                 return await this.endGame()
             }
             this.startQuestionTimer(true)
@@ -161,13 +161,13 @@ class VietnamChallenge {
     schedulerNPC() {
         if(this.boardController.isHasNPC) {
             let timeRandom = utils.getRandomInt(this.game.gameData.questionTimeout / 3, this.game.gameData.questionTimeout - 2)
-            console.log('NPC answer after: ' + timeRandom)
+            //console.log(this.boardController.boardName + ', NPC answer after: ' + timeRandom)
             setTimeout(() => {
                 let npc = this.boardController.getNPC()
                 if(npc) {
                     let province = provinceController.randomProvince()
                     if(province) {
-                        console.log('NPC anwsered')
+                        console.log(this.boardController.boardName + ", " + npc.user.displayName + ' NPC anwsered')
                         //console.log(province)
                         let data = {lat: province.latitude, lng: province.longitude}                          
                         this.processAction(npc, data)

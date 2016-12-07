@@ -105,6 +105,7 @@ class SocketManager {
     }
 
     async autoSignup(socket, data) {
+
         let displayName = data.displayName
 
         if(displayName === null || displayName.length < 3) {
@@ -112,7 +113,10 @@ class SocketManager {
         }
 
         let user = await UserController.autoSignup(displayName)
+        console.log(`Register success: ${displayName}`)
+
         await this.addNewUser(socket, user)
+
     }
 
     async login(socket, data) {
@@ -171,30 +175,36 @@ class SocketManager {
     }
 
     async playNow(socketUser) {
-        for(let userName in this.userSockets) {
-            if(userName !== socketUser.user.userName) {
-                let participant = this.userSockets[userName]
+        let findTime = 2000
 
-                if(!participant.isInLobby()) {
-                    continue
+        setTimeout(async () => {
+            for(let userName in this.userSockets) {
+                if(userName !== socketUser.user.userName) {
+                    let participant = this.userSockets[userName]
+
+                    if(!participant.isInLobby()) {
+                        continue
+                    }
+
+                    return this.createBoard(socketUser, participant)
                 }
-
-                return this.createBoard(socketUser, participant)
             }
-        }
 
-        let newNpc = await this.genNewNPC()
-        if(newNpc) {
-            return this.createBoard(socketUser, newNpc)
-        }
+            let newNpc = await this.genNewNPC()
+            if(newNpc) {
+                return this.createBoard(socketUser, newNpc)
+            }
 
-        socketUser.send(errorCode.notFoundParticipant)
+            socketUser.send(errorCode.notFoundParticipant)
+        }, findTime)
+
     }
 
     async createBoard(socketUser, participant) {
         let boardName = `${socketUser.user.userName}_${participant.user.userName}`
         let board = new BoardController(this, boardName)
 
+        console.log("Found user: " + participant.user.displayName + ", is NPC: " + participant.isNpc())
         console.log(`Board create: ${boardName}`)
 
         await board.joinBoard(socketUser)

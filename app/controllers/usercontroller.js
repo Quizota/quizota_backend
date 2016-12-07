@@ -9,6 +9,8 @@ let GameController = require('./gamecontroller')
 let utils = require('./utils')
 
 
+let shuffle = require('shuffle-array')
+
 
 class UserController {
 
@@ -98,6 +100,8 @@ class UserController {
             ['hieutran8871', 'Hieu MV'], ['huong772c', 'Huong LT'], ['jack827cc', 'Jack Jill'], 
             ['chales8271', 'Chales Nguyen'], ['lucky7666s', 'Lucky Game'], ['sang8837', 'Sang PH'], 
             ['ve8872', 'Ve TV'], ['xuan887cc', 'Xuan TTA'], ['tai99882c', 'Tai NgoT']]
+
+        shuffle(userNames);
 
         let npc = utils.getRandomInt(0, userNames.length - 1)
         let userName = userNames[npc][0]
