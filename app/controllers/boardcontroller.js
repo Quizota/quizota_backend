@@ -66,12 +66,19 @@ class BoardController {
         }
     }
 
-    async startGame() { 
+    async startGame() {
+
         let timeWait = 10000
         console.log('Start game after: ' + timeWait + ', ' + this.boardName)
 
+        let playerArr = []
+
+        for(let index in this.players) {
+            playerArr.push(this.players[index].user)
+        }
+
         let waitingStart = errorCode.waitingStartGame
-        waitingStart.data = {waitingTime: timeWait}
+        waitingStart.data = {waitingTime: timeWait, players: playerArr}
         await this.sendBroadcastAllPlayers(waitingStart)
 
 
@@ -83,7 +90,7 @@ class BoardController {
         }
 
         setTimeout(async () => {
-            
+
             let returnData = errorCode.startGame
             returnData.data = await this.gameLogic.startGame()
 
@@ -93,7 +100,7 @@ class BoardController {
             let self = this
             if(gameData.timeOut > 0) {
                 this.timeOut = setTimeout(async () => {
-                    await self.gameLogic.endGame()       
+                    await self.gameLogic.endGame()
                 }, gameData.timeOut)
             }
             console.log('-------Game started : ' + ', ' + this.boardName)
@@ -176,15 +183,18 @@ class BoardController {
 
         await this.sendBroadcastAllPlayers(res)
 
+
+        /*
         let self = this
-        setTimeout(function() {
-            console.log('timer kick user not back lobby: ' + ', ' + this.boardName)
+        this.timeOut = setTimeout(function() {
+            console.log('timer kick user not back lobby: ' + ', ' + self.boardName)
 
             for(let i = 0; i < self.players.length; i++) {
                 self.socketManager.backLobby(self.players[i])
                 i--
             }
         }, 30000)
+        */
     }
 
     async saveBonus(winner, bonusElo) {

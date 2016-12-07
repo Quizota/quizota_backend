@@ -119,7 +119,7 @@ class UserController {
         user.gameUnlocked.push({gameId: 1, win: 0, lose: 0})
         user.gameUnlocked.push({gameId: 2, win: 0, lose: 0})
 
-        await user.promise.save()      
+        await user.promise.save()
         
         return user
     }
