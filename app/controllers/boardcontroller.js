@@ -184,7 +184,6 @@ class BoardController {
         await this.sendBroadcastAllPlayers(res)
 
 
-
         let self = this
         this.timeOut = setTimeout(function() {
             console.log('timer kick user not back lobby: ' + ', ' + self.boardName)

@@ -70,7 +70,6 @@ class VietnamChallenge {
 
         this.timeOut = setTimeout(async() => {
             if (this.currentQuestion === this.game.gameData.totalQuestion) {
-                console.log('-------END GAME--' + ', ' + this.boardController.boardName)
                 return await this.endGame()
             }
             this.startQuestionTimer(true)
@@ -135,7 +134,10 @@ class VietnamChallenge {
 
         if(maxScore < this.game.gameData.totalQuestion) {
             winner = ''
-        }        
+        }
+
+        console.log('-------END GAME--' + ', ' + this.boardController.boardName)
+        console.log('-------Winner:' + winner + ', ' + JSON.stringify(this.scores))
 
         await this.boardController.endGame(winner, this.scores)
     }
@@ -150,7 +152,7 @@ class VietnamChallenge {
         let maxDistance = 500
         let maxBonus = 100
 
-        let bonus = maxBonus - maxBonus * (distance / maxDistance)
+        let bonus = distance <= 50 ? maxBonus : (maxBonus - maxBonus * (distance / maxDistance))
         return {bonus: Math.round(bonus < 0 ? 0 : bonus), distance: distance}
     }
 
