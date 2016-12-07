@@ -184,7 +184,7 @@ class BoardController {
         await this.sendBroadcastAllPlayers(res)
 
 
-        /*
+
         let self = this
         this.timeOut = setTimeout(function() {
             console.log('timer kick user not back lobby: ' + ', ' + self.boardName)
@@ -193,8 +193,8 @@ class BoardController {
                 self.socketManager.backLobby(self.players[i])
                 i--
             }
-        }, 30000)
-        */
+        }, 40000)
+
     }
 
     async saveBonus(winner, bonusElo) {
