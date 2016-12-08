@@ -9,6 +9,8 @@ class ProvinceController {
 
     async init() {
         this.provinceList = await Province.promise.find({})
+        console.log('Province length: ' + this.provinceList.length)
+
     }
 
     randomProvince() {

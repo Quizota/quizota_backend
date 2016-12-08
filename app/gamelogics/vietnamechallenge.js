@@ -157,7 +157,7 @@ class VietnamChallenge {
     }
 
     getGameId() {
-        return this.gameData.id
+        return this.game.id
     }
 
     schedulerNPC() {

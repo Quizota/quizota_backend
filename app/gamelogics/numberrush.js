@@ -67,7 +67,7 @@ class NumberRush {
     }
 
     getGameId() {
-        return this.gameData.id
+        return this.game.gameData.id
     }
 }
 

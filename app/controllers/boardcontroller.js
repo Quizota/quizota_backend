@@ -208,14 +208,15 @@ class BoardController {
     async saveBonus(winner, bonusElo) {
         this.players.map(async (socketUser) => {
             if(winner === '') {
-                await userController.updateElo(socketUser.user, 0, this.gameLogic.getGameId)
+                await userController.updateElo(socketUser.user, 0, this.gameLogic.getGameId())
             } else {
                 if (socketUser.user.userName === winner) {
-                    await userController.updateElo(socketUser.user, bonusElo, this.gameLogic.getGameId)
+                    await userController.updateElo(socketUser.user, bonusElo, this.gameLogic.getGameId())
                 } else{
-                    await userController.updateElo(socketUser.user, -1, this.gameLogic.getGameId)
+                    await userController.updateElo(socketUser.user, -1, this.gameLogic.getGameId())
                 }
             }
+            //console.log(socketUser.user.gameUnlocked)
         })
     }
 
