@@ -11,15 +11,21 @@ let userSchema = mongoose.Schema( {
     password: String,
     avatar: {
         type: String,
-        default: 'images/avatar/default.png'
+        default: 'img/avatar/avatar_1.png'
     },
     gameUnlocked: [
         {
             gameId: {
                 type: Number
             },
-            win: Number,
-            lose: Number
+            win: {
+                type: Number,
+                default: 0
+            },
+            lose: {
+                type: Number,
+                default: 0
+            }
         }
     ],
     level: {

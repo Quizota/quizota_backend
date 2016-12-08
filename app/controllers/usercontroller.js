@@ -27,6 +27,10 @@ class UserController {
         user.displayName = displayName
         user.password = ''
 
+        let rid = utils.getRandomInt(1, 10)
+        user.avatar = `img/avatar/avatar_${rid}.png`
+
+
         user.gameUnlocked.push({gameId: 1, win: 0, lose: 0})
         user.gameUnlocked.push({gameId: 2, win: 0, lose: 0})
 
@@ -74,7 +78,7 @@ class UserController {
                 if (bonusElo > 0) {
                     user.gameUnlocked[i].win += 1
                     break
-                } else if (bonusElo < 0) {
+                } else {
                     user.gameUnlocked[i].lose += 1
                     break
                 }
